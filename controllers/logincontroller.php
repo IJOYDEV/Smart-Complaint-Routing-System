@@ -4,12 +4,11 @@ require_once "../config/database.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $email = trim($_POST["email"]);
+    $email    = trim($_POST["email"]);
     $password = $_POST["password"];
-    $role = "citizen";
 
-    $stmt = $conn->prepare("SELECT * FROM users WHERE email = ? AND role = ?");
-    $stmt->bind_param("ss", $email, $role);
+    $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
+    $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
 
@@ -17,13 +16,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         $row = $result->fetch_assoc();
 
-        if (password_verify($password, $row["password"])) {
-
-            $_SESSION["user_id"] = $row["id"];
-            $_SESSION["fullname"] = $row["fullname"];
-            $_SESSION["role"] = $row["role"];
-
         
+        $passwordMatch = password_verify($password, $row["password"]) 
+                         || $password === $row["password"];
+
+        if ($passwordMatch) {
+
+            $_SESSION["user_id"]  = $row["id"];
+            $_SESSION["fullname"] = $row["fullname"];
+            $_SESSION["role"]     = $row["role"];
+
+            
             if ($row["role"] === "admin") {
                 header("Location: ../pages/admin-dashboard.php");
             } else {
@@ -32,13 +35,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit();
 
         } else {
-            echo "Invalid password";
+         
+            header("Location: ../login.php?error=invalid_password");
+            exit();
         }
 
     } else {
-        echo "User not found";
+        header("Location: ../login.php?error=user_not_found");
+        exit();
     }
 
     $stmt->close();
+    $conn->close();
 }
 ?>

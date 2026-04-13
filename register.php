@@ -14,7 +14,26 @@
 
 
         <form action="controllers/registercontroller.php" method="POST">
-            <select name="role" required>
+            
+        <?php if (isset($_GET['error'])): ?>
+    <p style="color:red;">
+        <?php
+        if ($_GET['error'] === 'password_mismatch') echo "Passwords do not match.";
+        if ($_GET['error'] === 'email_taken')        echo "Email already registered.";
+        if ($_GET['error'] === 'register_failed')    echo "Registration failed. Try again.";
+        ?>
+    </p>
+<?php endif; ?>
+
+ <?php if (isset($_GET['success'])): ?>
+        <p style="color:green;">
+            <?php
+            if ($_GET['success'] === 'registered') echo "Account created! Please login.";
+            ?>
+        </p>
+    <?php endif; ?>
+    
+        <select name="role" required>
                 <option value="">Select Role</option>
                 <option value="citizen">Citizen</option>
             </select>

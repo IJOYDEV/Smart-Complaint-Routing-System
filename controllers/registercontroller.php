@@ -12,8 +12,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $role = "citizen"; 
 
     if ($password !== $confirm_password) {
-        die("Passwords do not match.");
-    }
+    header("Location: ../register.php?error=password_mismatch");
+    exit();
+}
 
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 

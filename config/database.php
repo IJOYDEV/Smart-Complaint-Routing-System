@@ -1,12 +1,12 @@
 <?php
 
-$host = "localhost";
-$user = "root";
-$password = "";
-$dbname = "smart_complaint_db";
+$host     = "localhost";
+$user     = "root";
+$password = ""; // XAMPP default is empty password
+$dbname   = "smart_complaint_db"; // your database name
 
-$conn = new mysqli($host, $user, $password, $dbname);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+$conn = mysqli_connect($host, $user, $password, $dbname);
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
 }
+?>

@@ -23,7 +23,15 @@
     <a href="register.php">Create Account</a>
 </p>
 
-        </form>
+    <?php if (isset($_GET['error'])): ?>
+    <p style="color:red;">
+        <?php 
+        if ($_GET['error'] === 'invalid_password') echo "Wrong password. Try again.";
+        if ($_GET['error'] === 'user_not_found')   echo "No account found with that email.";
+        ?>
+    </p>
+<?php endif; ?>
+</form>
     </div>
 </section>
 
