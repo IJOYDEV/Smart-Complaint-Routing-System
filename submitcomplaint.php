@@ -5,10 +5,6 @@ if (!isset($_SESSION["user_id"])) {
     header("Location: login.php");
     exit();
 }
-
-require_once "config/database.php";
-
-$departments = $conn->query("SELECT id, department_name FROM departments");
 ?>
 
 <!DOCTYPE html>
@@ -45,7 +41,9 @@ $departments = $conn->query("SELECT id, department_name FROM departments");
     <?php endif; ?>
 
     <?php if (isset($_GET['success'])): ?>
-        <div class="alert success">Complaint submitted successfully!</div>
+        <div class="alert success">
+            Complaint submitted! It has been automatically routed to the relevant department.
+        </div>
     <?php endif; ?>
 
     <div class="form-card">
@@ -57,23 +55,15 @@ $departments = $conn->query("SELECT id, department_name FROM departments");
             </div>
 
             <div class="form-group">
-                <label>Department</label>
-                <select name="department_id" required>
-                    <option value="">-- Select Department --</option>
-                    <?php while($dept = $departments->fetch_assoc()): ?>
-                        <option value="<?php echo $dept['id']; ?>">
-                            <?php echo htmlspecialchars($dept['department_name']); ?>
-                        </option>
-                    <?php endwhile; ?>
-                </select>
-            </div>
-
-            <div class="form-group">
                 <label>Complaint Description</label>
-                <textarea name="description" rows="5" placeholder="Describe your complaint in detail..." required></textarea>
+                <textarea name="description" rows="5" 
+                    placeholder="Describe your complaint in detail. The system will automatically route it to the correct department..." 
+                    required></textarea>
             </div>
 
-            <button type="submit" name="submit_complaint" class="submit-btn">Submit Complaint</button>
+            <button type="submit" name="submit_complaint" class="submit-btn">
+                Submit Complaint
+            </button>
 
         </form>
     </div>

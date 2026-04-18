@@ -31,7 +31,6 @@ class User {
         }
 
         $stmt->bind_param("ssss", $fullname, $email, $password, $role);
-
         return $stmt->execute();
     }
 
@@ -48,6 +47,53 @@ class User {
             "DELETE FROM users WHERE id = ? AND role != 'admin'"
         );
         $stmt->bind_param("i", $user_id);
+        return $stmt->execute();
+    }
+
+    // ✅ Used by logincontroller
+    public function findByEmail($email) {
+        $stmt = $this->conn->prepare(
+            "SELECT * FROM users WHERE email = ? LIMIT 1"
+        );
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_assoc();
+    }
+
+    // ✅ Used to get any user by ID
+    public function findById($id) {
+        $stmt = $this->conn->prepare(
+            "SELECT id, fullname, email, role, created_at 
+             FROM users WHERE id = ? LIMIT 1"
+        );
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_assoc();
+    }
+
+    // ✅ Used by admin to count all users
+    public function countAll() {
+        $result = $this->conn->query(
+            "SELECT COUNT(*) as total FROM users"
+        );
+        return $result->fetch_assoc()['total'];
+    }
+
+    // ✅ Used by admin to count only citizens
+    public function countCitizens() {
+        $result = $this->conn->query(
+            "SELECT COUNT(*) as total FROM users WHERE role = 'citizen'"
+        );
+        return $result->fetch_assoc()['total'];
+    }
+
+    // ✅ Used by admin to update password
+    public function updatePassword($user_id, $newPassword) {
+        $hash = password_hash($newPassword, PASSWORD_DEFAULT);
+        $stmt = $this->conn->prepare(
+            "UPDATE users SET password = ? WHERE id = ?"
+        );
+        $stmt->bind_param("si", $hash, $user_id);
         return $stmt->execute();
     }
 }
