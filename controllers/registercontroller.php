@@ -1,7 +1,7 @@
 <?php
 session_start();
-require_once "../config/database.php";
-require_once "../models/User.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "/smartcomplaintsystem/config/database.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "/smartcomplaintsystem/models/User.php";
 
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     header("Location: ../register.php");
